@@ -2,7 +2,9 @@
 
 *This application is provided without guarantee or warranty*
 =========================================================
-![Image of DataWEdge API Exerciser](./DW-API-Exerciser)
+
+![Image of DataWedge API Exerciser](./DW-API-Exerciser.jpg)
+
 This application has been written to exercise the Zebra DataWedge Data Capture API (http://techdocs.zebra.com/datawedge/latest/guide/api/).
 
 Zebra DataWedge is a 'zero code' solution to capture barcode, magnetic stripe and OCR data on Zebra devices.  DataWedge is a profile-based service running on Zebra mobile computers and offers an intent based API for user applications to interact and control.  The intent based API offers limited functionality for controlling the scanning and profile aspects of DataWedge
