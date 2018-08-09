@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "C:\\Zebra\\DataWedge\\Github\\DataWedge-API-Exerciser\\DataWedge-API-Exerciser\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-h720dp-v13\\values-h720dp-v13.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\NRCG87\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-24.1.1.aar\\8f20489b711d4e13e373cdd1aae24c4a\\res\\values-h720dp-v13\\values-h720dp-v13.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "66",
+                        "endOffsets": "117"
+                    }
+                }
+            ]
+        }
+    ]
+}

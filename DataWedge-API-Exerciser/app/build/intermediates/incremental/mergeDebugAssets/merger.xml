@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\Zebra\DataWedge\Github\DataWedge-API-Exerciser\DataWedge-API-Exerciser\app\src\main\assets"/><source path="C:\Zebra\DataWedge\Github\DataWedge-API-Exerciser\DataWedge-API-Exerciser\app\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="C:\Zebra\DataWedge\Github\DataWedge-API-Exerciser\DataWedge-API-Exerciser\app\src\debug\assets"/></dataSet></merger>
