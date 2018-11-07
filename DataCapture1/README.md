@@ -5,7 +5,7 @@
 
 ![Image of DataCapture1 sample](./datacapture1-0.png)
 
-This sample app demonstrates DataWedge barcode scanning, configuration, scanner status notification and soft scan trigger using intent APIs (http://techdocs.zebra.com/datawedge/latest/guide/api/).
+This sample app demonstrates DataWedge barcode scanning, configuration, scanner status notification and soft scan trigger using [DataWedge Intent APIs](http://techdocs.zebra.com/datawedge/latest/guide/api/).
 
 Available actions in this sample:
 
