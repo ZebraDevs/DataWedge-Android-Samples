@@ -1,0 +1,16 @@
+<!--
+
+// Predefining some of the strings simplifies the process of receiving and extracting the scanned data in the
+// target app. When received, the intent’s action (com.dwexample.ACTION) will contain extras with the scanned
+// data for source, type and data as described in the DataWedge Intent Output guide:
+// http://techdocs.zebra.com/datawedge/latest/guide/output/intent/#singledecodemode
+
+-->
+
+<resources>
+    <string name="app_name">DW BasicIntent1</string>
+    <string name="activity_intent_filter_action">com.dwbasicintent1.ACTION</string>
+    <string name="datawedge_intent_key_source">com.symbol.datawedge.source</string>
+    <string name="datawedge_intent_key_label_type">com.symbol.datawedge.label_type</string>
+    <string name="datawedge_intent_key_data">com.symbol.datawedge.data_string</string>
+</resources>
