@@ -19,7 +19,7 @@ Available actions in this sample:
    * scan data
    * decoder type
 
-See [Zebra TechDocs - Data Capture Sample](http://techdocs.zebra.com/datawedge/latest/guide/samples/barcode1/).
+Refer to Zebra TechDocs: http://techdocs.zebra.com/datawedge/latest/guide/samples/barcode1/
 
 
 
