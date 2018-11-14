@@ -14,7 +14,6 @@ Available actions in this sample:
      * scan data
      * decoder type
 
-
-
+Refer to Zebra TechDocs: http://techdocs.zebra.com/datawedge/latest/guide/samples/basicintent1/
 
 
