@@ -3,7 +3,7 @@
 *This application is intended for demonstration purposes only. It is provided as-is without guarantee or warranty and may be modified to suit individual needs.*
 =========================================================
 
-![Image of SignatureCapture sample](./signaturecapture1.png)
+<img style="height:350px" src="signaturecapture1.png"/>
 
 This sample app demonstrates how to capture data from [Decoder Signature](http://techdocs.zebra.com/datawedge/latest/guide/input/barcode/#decodersignature) in .JPG (default) and .BMP formats using [DataWedge Intent API](http://techdocs.zebra.com/datawedge/latest/guide/api/).
 
