@@ -1,4 +1,0 @@
-#Tue Aug 07 14:06:24 EDT 2018
-base.0=C\:\\Zebra\\DataWedge\\Github\\DataWedge-API-Exerciser\\DataWedge-API-Exerciser\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\4
-path.0=classes.dex
-renamed.0=classes.dex
