@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">DW ProfileSwitch1</string>
+    <string name="heading">Selecting any input field will switch the DataWedge profile accordingly</string>
+</resources>
