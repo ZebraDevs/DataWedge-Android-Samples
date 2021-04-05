@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">DW MultiActivity</string>
-    <string name="active_profile_activity_1">This is the First activity.  Active Profile:</string>
-    <string name="active_profile_activity_2">This is the Second activity.  Active Profile:</string>
-    <string name="active_profile_will_go_here">Active Profile will go here</string>
-    <string name="go_to_first_activity">Go to First Activity</string>
-    <string name="go_to_second_activity">Go to Second Activity</string>
-</resources>
