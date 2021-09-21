@@ -9,8 +9,7 @@ This sample app demonstrates how to capture data from [Decoder Signature](http:/
 
 Available actions in this sample:
 
-* Create a DatatWedge profile if it does not exist, configure it with specific parameters and associate it with this app.
-* Adjust the height and width of the image output.
+* Create a DataWedge profile if it does not exist, configure it with specific parameters and associate it with this app.
 * Scan and display the captured data as an image.
 * Save the image file to the device.
 
