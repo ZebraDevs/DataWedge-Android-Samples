@@ -1,47 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zebra.signaturecapture">
-
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="18" />
-
+    package="com.zebra.signaturecapturesample1">
+    <uses-permission android:name="com.symbol.datawedge.permission.contentprovider" />
+    <queries>
+        <package android:name="com.symbol.datawedge"/>
+    </queries>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-        <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:launchMode="singleTop">
+        android:theme="@style/Theme.SignatureCaptureSample1">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <intent-filter>
-                <action android:name="com.zebra.signaturecapture.action.SigCap" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
-
-        <!-- broadcast receiver -->
-        <receiver
-            android:name=".MyBroadcastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.zebra.signaturecapture.action.SigCap" />
-
-                <category android:name="com.zebra.signaturecapture.category.SigCap" />
-            </intent-filter>
-        </receiver>
-
     </application>
+
 
 </manifest>
