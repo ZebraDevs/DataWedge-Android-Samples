@@ -14,7 +14,7 @@ Available actions in this sample:
 * Scan and display the captured data as an image.
 * Save the image file to the device.
 
-Refer to Zebra TechDocs: http://techdocs.zebra.com/datawedge/latest/guide/samples/signaturecapture/
+Refer to Zebra TechDocs: http://techdocs.zebra.com/datawedge/8-1/guide/samples/signaturecapture/
 
 
 
