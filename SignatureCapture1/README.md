@@ -5,7 +5,7 @@
 
 <img style="height:350px" src="signaturecapture1.png"/>
 
-This sample app demonstrates how to capture data from [Decoder Signature](http://techdocs.zebra.com/datawedge/latest/guide/input/barcode/#decodersignature) in .JPG (default) and .BMP formats using [DataWedge Intent API](http://techdocs.zebra.com/datawedge/latest/guide/api/). **_It applies to DataWedge versions 7.3 - 8.1._**
+This sample app demonstrates how to capture data from [Decoder Signature](http://techdocs.zebra.com/datawedge/latest/guide/input/barcode/#decodersignature) in .JPG (default) and .BMP formats using [DataWedge Intent API](http://techdocs.zebra.com/datawedge/latest/guide/api/). **_It applies to DataWedge versions 7.3 to 8.1._**
 
 Available actions in this sample:
 
