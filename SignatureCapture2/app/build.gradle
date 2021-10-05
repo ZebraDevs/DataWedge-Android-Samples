@@ -7,7 +7,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.zebra.signaturecapturesample1"
+        applicationId "com.zebra.signaturecapturesample2"
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1

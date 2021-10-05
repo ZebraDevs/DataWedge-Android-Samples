@@ -1,4 +1,4 @@
-package com.zebra.signaturecapturesample1;
+package com.zebra.signaturecapturesample2;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.BroadcastReceiver;

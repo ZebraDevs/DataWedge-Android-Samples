@@ -1,4 +1,4 @@
-package com.zebra.signaturecapturesample1;
+package com.zebra.signaturecapturesample2;
 
 public class IntentKeys {
 
