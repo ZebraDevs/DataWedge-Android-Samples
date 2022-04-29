@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TruckLoadingDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="NotifOn">NOTIF ON</string>
+    <string name="NotifOff">NOTIF OFF</string>
+    <string name="ScanRedOn">SCAN RED ON</string>
+    <string name="ScanGreenOn">SCAN GREEN ON</string>
+    <string name="ScanRedOff">SCAN RED OFF</string>
+    <string name="ScanGreenOff">SCAN GREEN OFF</string>
+    <string name="notif_led">Notification LED Test</string>
+    <string name="datacap_led">Data Capture LED Test</string>
+
+    <string name="datawedge_intent_key_data">com.symbol.datawedge.data_string</string>
+</resources>

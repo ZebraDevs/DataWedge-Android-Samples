@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    android:id="@+id/custom_message">
+
+    <!-- Currently 2 versions of this layout file. Need to discuss this in a meeting-->
+
+    <!--LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="4dp"
+        android:background="@color/light_blue">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="1dp"
+            android:background="@color/white">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="23dp"
+                android:layout_marginLeft="5dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Message:"
+                android:textColor="@color/light_blue"
+                android:textSize="8pt" />
+
+            <EditText
+                android:id="@+id/textInput"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_marginHorizontal="2dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="0dp"
+                android:imeOptions="actionDone"
+                android:inputType="textShortMessage"
+                android:singleLine="true"
+                android:textSize="8pt"
+                android:hint=". . ."
+                android:textColorHint="@color/light_blue"
+                android:textColor="@color/light_blue"
+                android:fontFamily="sans-serif-medium"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/text_input">
+
+        <EditText
+            android:id="@+id/textInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="2dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="20dp"
+            android:imeOptions="actionDone"
+            android:inputType="textShortMessage"
+            android:singleLine="true"
+            android:textSize="6pt"
+            android:textAlignment="textEnd"
+            android:hint=". . ."
+            android:textColorHint="@color/white"
+            android:textColor="@color/light_blue"
+            android:fontFamily="sans-serif-medium"
+            />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
