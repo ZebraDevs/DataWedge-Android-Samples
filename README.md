@@ -1,5 +1,5 @@
 # samples-datawedge
-Sample DataWedge applications
+Sample DataWedge applications 
 
 END USER LICENSE AGREEMENT (UNRESTRICTED SOFTWARE)
 
