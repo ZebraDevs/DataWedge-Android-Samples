@@ -90,4 +90,4 @@ jobs:
       uses: github/codeql-action/analyze@v2
       with:
         output: ../../results
-        checkout-path: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DocumentCaptureSample1/
+        checkout_path: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DocumentCaptureSample1/
