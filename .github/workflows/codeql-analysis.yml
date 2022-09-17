@@ -69,9 +69,20 @@ jobs:
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
     - run: |
-        echo "Assemble debug build..."
-        cd ./TruckLoadingDemo
+        echo "Assemble BasicIntent1 debug build..."
+        cd ./BasicIntent1
         ./gradlew clean --continue assembleDebug || true
+        cd ..
+        
+        echo "Assemble DataCapture1 debug build..."
+        cd ./DataCapture1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+        
+        echo "Assemble DocumentCaptureSample1 debug build..."
+        cd ./DocumentCaptureSample1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
