@@ -69,25 +69,13 @@ jobs:
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
     - run: |        
-        echo "Assemble DataCapture1 debug build..."
-        cd ./DataCapture1
-        ./gradlew clean --continue assembleDebug || true
-        cd ..
-        
-    - run: | 
-        echo "Assemble DocumentCaptureSample1 debug build..."
-        cd ./DocumentCaptureSample1
-        ./gradlew clean --continue assembleDebug || true
-        cd ..
-        
-    - run: | 
-        echo "Assemble SignatureCapture1 debug build..."
-        cd ./SignatureCapture1
+        echo "Assemble TruckLoadingDemo debug build..."
+        cd ./TruckLoadingDemo
         ./gradlew clean --continue assembleDebug || true
         cd ..
 
-    - name: Perform CodeQL Analysis for DocumentCaptureSample1
+    - name: Perform CodeQL Analysis for TruckLoadingDemo
       uses: github/codeql-action/analyze@v2
       with:
         output: ../../results
-        checkout_path: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DocumentCaptureSample1/
+        checkout_path: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/TruckLoadingDemo/
