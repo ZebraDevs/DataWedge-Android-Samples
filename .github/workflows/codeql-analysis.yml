@@ -86,5 +86,8 @@ jobs:
         ./gradlew clean --continue assembleDebug || true
         cd ..
 
-    - name: Perform CodeQL Analysis
+    - name: Perform CodeQL Analysis for DocumentCaptureSample1
       uses: github/codeql-action/analyze@v2
+      with:
+        output: ../../results
+        checkout-path: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DocumentCaptureSample1/
