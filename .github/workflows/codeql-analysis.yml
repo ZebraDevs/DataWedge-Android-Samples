@@ -68,19 +68,21 @@ jobs:
     #   If the Autobuild fails above, remove it and uncomment the following three lines. 
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
-    - run: |
-        echo "Assemble BasicIntent1 debug build..."
-        cd ./BasicIntent1
-        ./gradlew clean --continue assembleDebug || true
-        cd ..
-        
+    - run: |        
         echo "Assemble DataCapture1 debug build..."
         cd ./DataCapture1
         ./gradlew clean --continue assembleDebug || true
         cd ..
         
+    - run: | 
         echo "Assemble DocumentCaptureSample1 debug build..."
         cd ./DocumentCaptureSample1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+        
+    - run: | 
+        echo "Assemble SignatureCapture1 debug build..."
+        cd ./SignatureCapture1
         ./gradlew clean --continue assembleDebug || true
         cd ..
 
