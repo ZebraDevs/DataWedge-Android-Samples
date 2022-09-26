@@ -21,8 +21,8 @@ on:
     - cron: '18 18 * * 5'
 
 jobs:
-  analyze:
-    name: Analyze
+  analyze_basic_intent:
+    name: Analyze BasicIntent1 project sources
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -45,32 +45,188 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-        
-        # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/BasicIntent1/
 
-        
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    # Commented out the following 2 command lines since it causes an error:
-    # - name: Autobuild
-    #  uses: github/codeql-action/autobuild@v2
+    - run: |
+        echo "Assemble BasicIntent1 debug build..."
+        cd ./BasicIntent1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
 
-    - run: make bootstrap
-    - run: make release
+    - name: Perform CodeQL Analysis for BasicIntent1
+      uses: github/codeql-action/analyze@v2
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+  analyze_data_capture:
+    name: Analyze DataCapture1 project sources
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
-    #   If the Autobuild fails above, remove it and uncomment the following three lines. 
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
-    # - run: |
-    #   echo "Run, Build Application using script"
-    #   ./location_of_script_within_repo/buildscript.sh
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Perform CodeQL Analysis
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DataCapture1/
+
+    - run: |
+        echo "Assemble DataCapture1 debug build..."
+        cd ./DataCapture1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+
+    - name: Perform CodeQL Analysis for DataCapture1
+      uses: github/codeql-action/analyze@v2
+
+  analyze_document_capture_sample:
+    name: Analyze DocumentCaptureSample1 project sources
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/DocumentCaptureSample1/
+
+    - run: |
+        echo "Assemble DocumentCaptureSample1 debug build..."
+        cd ./DocumentCaptureSample1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+
+    - name: Perform CodeQL Analysis for DocumentCaptureSample1
+      uses: github/codeql-action/analyze@v2
+
+  analyze_signature_capture_one:
+    name: Analyze SignatureCapture1 project sources
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/SignatureCapture1/
+
+    - run: |
+        echo "Assemble SignatureCapture1 debug build..."
+        cd ./SignatureCapture1
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+
+    - name: Perform CodeQL Analysis for SignatureCapture1
+      uses: github/codeql-action/analyze@v2
+
+  analyze_signature_capture_two:
+    name: Analyze SignatureCapture2 project sources
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/SignatureCapture2/
+
+    - run: |
+        echo "Assemble SignatureCapture2 debug build..."
+        cd ./SignatureCapture2
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+
+    - name: Perform CodeQL Analysis for SignatureCapture2
+      uses: github/codeql-action/analyze@v2
+
+  analyze_truckloading_demo:
+    name: Analyze TruckLoadingDemo project sources
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
+        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Initializes the CodeQL tools for scanning.
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: ${{ matrix.language }}
+        source-root: /home/runner/work/DataWedge-Android-Samples/DataWedge-Android-Samples/TruckLoadingDemo/
+
+    - run: |
+        echo "Assemble TruckLoadingDemo debug build..."
+        cd ./TruckLoadingDemo
+        ./gradlew clean --continue assembleDebug || true
+        cd ..
+
+    - name: Perform CodeQL Analysis for TruckLoadingDemo
       uses: github/codeql-action/analyze@v2
