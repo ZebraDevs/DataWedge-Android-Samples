@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         intentConfig.putString("RESET_CONFIG", "true");
         Bundle intentProps = new Bundle();
         intentProps.putString("intent_output_enabled", "true");
-        intentProps.putString("intent_action", "com.zebra.datacapture1.ACTION");
+        intentProps.putString("intent_action", getResources().getString(R.string.activity_intent_filter_action));
         intentProps.putString("intent_delivery", "2");
         intentConfig.putBundle("PARAM_LIST", intentProps);
         profileConfig.putBundle("PLUGIN_CONFIG", intentConfig);
