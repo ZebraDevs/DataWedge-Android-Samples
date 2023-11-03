@@ -1,0 +1,60 @@
+name: "Pr workflow"
+
+on:
+  pull_request:
+    types: [ opened, synchronize, edited, reopened ]
+    branches:
+      - master
+
+concurrency:
+  group: zebra-pr-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      GRADLE_OPTS: -Dorg.gradle.workers.max=4 -Dorg.gradle.parallel=true -Dkotlin.compiler.execution.strategy=in-process"
+
+    steps:
+      - name: "Check out code"
+        uses: actions/checkout@v4
+
+      - name: "Setup java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+
+      - uses: gradle/wrapper-validation-action@v1
+
+      - uses: gradle/gradle-build-action@v2
+
+      - name: "Build BasicIntent1"
+        run: ./gradlew :BasicIntent1:app:assembleDebug :BasicIntent1:app:lintDebug
+
+      - name: "Build DataCapture1"
+        run: ./gradlew :DataCapture1:app:assembleDebug :DataCapture1:app:lintDebug
+
+      - name: "Build DocumentCaptureSample1"
+        run: ./gradlew :DocumentCaptureSample1:app:assembleDebug :DocumentCaptureSample1:app:lintDebug
+
+      - name: "Build FreeFormOCRSample1"
+        run: ./gradlew :FreeFormOCRSample1:app:assembleDebug :FreeFormOCRSample1:app:lintDebug
+
+      - name: "Build SignatureCapture1"
+        run: ./gradlew :SignatureCapture1:app:assembleDebug :SignatureCapture1:app:lintDebug
+
+      - name: "Build SignatureCapture2"
+        run: ./gradlew :SignatureCapture2:app:assembleDebug :SignatureCapture2:app:lintDebug
+
+      - name: "Build TruckLoadingDemo"
+        run: ./gradlew :TruckLoadingDemo:app:assembleDebug :TruckLoadingDemo:app:lintDebug
+
+      - name: "Upload reports"
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: Reports
+          path: '**/build/reports/*'
+          retention-days: 2
