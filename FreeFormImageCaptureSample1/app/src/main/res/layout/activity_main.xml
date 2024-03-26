@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FreeFormImageCaptureSample1"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"/>
+
+    <Button
+        android:id="@+id/btnToggleScanning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="btnOnClickScan"
+        android:focusable="false"
+        android:text="Start Scanning"
+        android:layout_marginTop="50dp"
+        android:textAllCaps="false" />
+
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:focusable="false"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_height="wrap_content"
+            android:onClick="btnOnClickCreateProfile"
+            android:text="Re-create profile"
+            android:focusable="false"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/btnClear"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:onClick="btnOnClickClearScannedData"
+            android:text="Clear Scan data"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:focusable="false"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="10dp"></Space>
+
+    <TextView
+        android:id="@+id/txtProfileStatus"
+        android:text="Profile Status: "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/txtStatus"
+        android:text="Workflow Status: "
+        android:paddingTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:focusable="false"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:focusable="false"
+            android:layout_height="wrap_content">
+
+
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:focusable="false"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/layoutRegions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
