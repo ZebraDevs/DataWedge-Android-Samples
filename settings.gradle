@@ -1,0 +1,7 @@
+includeBuild("BasicIntent1")
+includeBuild("DataCapture1")
+includeBuild("DocumentCaptureSample1")
+includeBuild("FreeFormOCRSample1")
+includeBuild("SignatureCapture1")
+includeBuild("SignatureCapture2")
+includeBuild("TruckLoadingDemo")

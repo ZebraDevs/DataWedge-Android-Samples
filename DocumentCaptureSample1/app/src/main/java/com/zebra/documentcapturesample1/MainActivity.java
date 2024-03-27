@@ -328,9 +328,9 @@ public class MainActivity extends AppCompatActivity {
                 cursor.moveToFirst();
 
                 String labelType = cursor
-                        .getString(cursor.getColumnIndex(IntentKeys.LABEL_TYPE));
+                        .getString(cursor.getColumnIndexOrThrow(IntentKeys.LABEL_TYPE));
                 String dataString = cursor
-                        .getString(cursor.getColumnIndex(IntentKeys.STRING_DATA_KEY_SINGLE_BARCODE));
+                        .getString(cursor.getColumnIndexOrThrow(IntentKeys.STRING_DATA_KEY_SINGLE_BARCODE));
 
                 barcodeData += "\nLabel type: " + labelType;
                 barcodeData += "\nString data: " + dataString;
@@ -381,18 +381,18 @@ public class MainActivity extends AppCompatActivity {
                     String labelType = "";
 
                     try {
-                        labelType = cursor.getString(cursor.getColumnIndex(IntentKeys.FIELD_LABEL_TYPE));
+                        labelType = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.FIELD_LABEL_TYPE));
                     } catch (Exception ex) {
                     }
 
                     strResultStatusData += "\nLabel type: " + labelType;
                     if (labelType.equals(IntentKeys.LABEL_TYPE_SIGNATURE)) {
-                        imgWidth = cursor.getInt(cursor.getColumnIndex(IntentKeys.IMAGE_WIDTH_TAG));
-                        imgHeight = cursor.getInt(cursor.getColumnIndex(IntentKeys.IMAGE_HEIGHT_TAG));
+                        imgWidth = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_WIDTH_TAG));
+                        imgHeight = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_HEIGHT_TAG));
                         // Checking if signature is present in the field [Start]
                         try {
                             int signature_status = -2;
-                            signature_status = cursor.getInt(cursor.getColumnIndex(IntentKeys.COLUMN_SIGNATURE_STATUS));
+                            signature_status = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.COLUMN_SIGNATURE_STATUS));
                             if (signature_status == 1) {
                                 //Signature present
                                 strResultStatusData += "\nSignature status: Signature is present";
@@ -413,23 +413,23 @@ public class MainActivity extends AppCompatActivity {
                         strResultStatusData += "\nImage data: ";
                     } else {
                         String dataString = cursor
-                                .getString(cursor.getColumnIndex(IntentKeys.DATA_STRING));
+                                .getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_STRING));
                         strResultStatusData += "\nString data: " + dataString;
                     }
 
-                    String nextURI = cursor.getString(cursor.getColumnIndex(IntentKeys.DATA_NEXT_URI));
+                    String nextURI = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
                     byte[] binaryData = null;
                     if (nextURI.isEmpty()) { // No data chunks. All data are available in one chunk
-                        binaryData = cursor.getBlob(cursor.getColumnIndex(IntentKeys.DECODE_DATA));
+                        binaryData = cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.DECODE_DATA));
                     } else {
                         try {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             final String fullDataSize = cursor
-                                    .getString(cursor.getColumnIndex(IntentKeys.FULL_DATA_SIZE));
+                                    .getString(cursor.getColumnIndexOrThrow(IntentKeys.FULL_DATA_SIZE));
                             int bufferSize = cursor.getInt(cursor
-                                    .getColumnIndex(IntentKeys.RAW_DATA_SIZE));
+                                    .getColumnIndexOrThrow(IntentKeys.RAW_DATA_SIZE));
                             baos.write(cursor.getBlob(cursor
-                                    .getColumnIndex(IntentKeys.DECODE_DATA))); // Read the first chunk from initial set
+                                    .getColumnIndexOrThrow(IntentKeys.DECODE_DATA))); // Read the first chunk from initial set
                             while (!nextURI.isEmpty()) {
                                 Cursor imageDataCursor = getContentResolver()
                                         .query(Uri.parse(nextURI), null,
@@ -438,14 +438,14 @@ public class MainActivity extends AppCompatActivity {
                                     imageDataCursor.moveToFirst();
                                     bufferSize += imageDataCursor
                                             .getInt(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.RAW_DATA_SIZE));
+                                                    .getColumnIndexOrThrow(IntentKeys.RAW_DATA_SIZE));
                                     byte[] bufferData = imageDataCursor
                                             .getBlob(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.DECODE_DATA));
+                                                    .getColumnIndexOrThrow(IntentKeys.DECODE_DATA));
                                     baos.write(bufferData);
                                     nextURI = imageDataCursor
                                             .getString(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.DATA_NEXT_URI));
+                                                    .getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
                                 }
                                 imageDataCursor.close();
 

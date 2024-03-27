@@ -11,7 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +25,7 @@ import org.w3c.dom.Text;
 import java.util.Set;
 
 import static android.provider.ContactsContract.Intents.Insert.ACTION;
+
 
 public class MainActivity extends AppCompatActivity {
 

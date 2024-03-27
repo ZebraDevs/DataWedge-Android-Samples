@@ -394,15 +394,15 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         if (cursor != null) {
             cursor.moveToFirst();
-            baos.write(cursor.getBlob(cursor.getColumnIndex(IntentKeys.RAW_DATA)));
-            String nextURI = cursor.getString(cursor.getColumnIndex(IntentKeys.DATA_NEXT_URI));
+            baos.write(cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.RAW_DATA)));
+            String nextURI = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
             while (nextURI != null && !nextURI.isEmpty()) {
                 Cursor cursorNextData = getContentResolver().query(Uri.parse(nextURI),
                         null, null, null);
                 if (cursorNextData != null) {
                     cursorNextData.moveToFirst();
-                    baos.write(cursorNextData.getBlob(cursorNextData.getColumnIndex(IntentKeys.RAW_DATA)));
-                    nextURI = cursorNextData.getString(cursorNextData.getColumnIndex(IntentKeys.DATA_NEXT_URI));
+                    baos.write(cursorNextData.getBlob(cursorNextData.getColumnIndexOrThrow(IntentKeys.RAW_DATA)));
+                    nextURI = cursorNextData.getString(cursorNextData.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
 
 
                     cursorNextData.close();
