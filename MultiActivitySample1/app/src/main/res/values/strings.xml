@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MultiActivitySample1</string>
+
+    <string name="label">Label :</string>
+    <string name="code">Data :</string>
+    <string name="current_profile">Current profile:</string>
+    <string name="scanner_status">Scanner status:</string>
+    <string name="soft_scan">Soft Scan</string>
+    <string name="picklist">Picklist</string>
+    <string name="decode_screen_notification">Decode Screen Notification</string>
+    <string name="set_config">Set Config</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="activity_2">Activity 2</string>
+    <string name="activity_1">Activity 1</string>
+    <string name="dw_scanner">DW Scanner :</string>
+    <string name="profile_creation_failed">Profile creation failed..!</string>
+    <string name="datawedge_is">DataWedge is %1$s..!</string>
+    <string name="profile_switch_success">Profile switch success..!</string>
+    <string name="scanner_switch_failed">Scanner switch failed..!</string>
+    <string name="profile_already_switched">Profile already switched..!</string>
+    <string name="profile_switch_failed">Profile switch failed</string>
+    <string name="enable_disable_scanner">Enable/Disable scanner</string>
+</resources>

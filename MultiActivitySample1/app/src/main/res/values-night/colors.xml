@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    barcode colors-->
+    <color name="latest_text_color">#FFFFFF</color>
+    <color name="text_color">#aaaaaa</color>
+</resources>
