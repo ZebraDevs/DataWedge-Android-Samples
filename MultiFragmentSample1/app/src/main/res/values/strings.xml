@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">MultiFragmentSample1</string>
+    <string name="action_settings">Settings</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="label">Label :</string>
+    <string name="code">Data :</string>
+    <string name="current_profile">Current profile:</string>
+    <string name="scanner_status">Scanner status:</string>
+    <string name="soft_scan">Soft Scan</string>
+    <string name="picklist">Picklist</string>
+    <string name="decode_screen_notification">Decode Screen Notification</string>
+    <string name="switch_params">Update</string>
+    <string name="dw_scanner">Switch Scanner :</string>
+    <string name="enable_disable_scanner">Enable/Disable Scanner</string>
+</resources>
