@@ -258,11 +258,11 @@ public class MainActivity extends AppCompatActivity {
                 cursor.moveToFirst();
                 String barCodeData = "";
                 String labelType = data.getString(IntentKeys.LABEL_TYPE_TAG);
-                int imageFormat = Integer.parseInt(cursor.getString(cursor.getColumnIndex(IntentKeys.IMAGE_FORMAT)));//Get image format 1 - JPEG, 3 - BMP,  4 - TIFF, 5 - YUV
+                int imageFormat = Integer.parseInt(cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_FORMAT)));//Get image format 1 - JPEG, 3 - BMP,  4 - TIFF, 5 - YUV
                 barCodeData += "\nLabel type: " + labelType;
-                barCodeData += "\nSignature : " + cursor.getString(cursor.getColumnIndex(IntentKeys.IMAGE_SIGNATURE_TYPE));
+                barCodeData += "\nSignature : " + cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_SIGNATURE_TYPE));
                 barCodeData += "\nImage format : " + getImageFormat(imageFormat); //Getting image format
-                barCodeData += "\nImage Size : " + cursor.getString(cursor.getColumnIndex(IntentKeys.IMAGE_SIZE))+ " bytes";
+                barCodeData += "\nImage Size : " + cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_SIZE))+ " bytes";
 
                 //Checking image format
                 if(imageFormat != 4)
@@ -274,24 +274,24 @@ public class MainActivity extends AppCompatActivity {
                 txtBarcodeData.setText(barCodeData);
                 setUIForResult(txtBarcodeData, null);
 
-                String nextURI = cursor.getString(cursor.getColumnIndex(IntentKeys.IMAGE_NEXT_URI));
+                String nextURI = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_NEXT_URI));
                 byte[] binaryData = null;
                 if (nextURI.isEmpty()) { //No data chunks. All data are available in one chunk
-                    binaryData = cursor.getBlob(cursor.getColumnIndex(IntentKeys.IMAGE_DATA));
+                    binaryData = cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_DATA));
                 }else{
                     try {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        final String fullDataSize = cursor.getString(cursor.getColumnIndex(IntentKeys.IMAGE_FULL_DATA_SIZE));
-                        int bufferSize = cursor.getInt(cursor.getColumnIndex(IntentKeys.IMAGE_BUFFER));
-                        baos.write(cursor.getBlob(cursor.getColumnIndex(IntentKeys.IMAGE_DATA))); //Read the first chunk from initial set
+                        final String fullDataSize = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_FULL_DATA_SIZE));
+                        int bufferSize = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_BUFFER));
+                        baos.write(cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_DATA))); //Read the first chunk from initial set
                         while (!nextURI.isEmpty()) {
                             Cursor imageDataCursor = getContentResolver().query(Uri.parse(nextURI), null, null, null);
                             if (imageDataCursor != null) {
                                 imageDataCursor.moveToFirst();
-                                bufferSize += imageDataCursor.getInt(imageDataCursor.getColumnIndex(IntentKeys.IMAGE_BUFFER));
-                                byte[] bufferData = imageDataCursor.getBlob(imageDataCursor.getColumnIndex(IntentKeys.IMAGE_DATA));
+                                bufferSize += imageDataCursor.getInt(imageDataCursor.getColumnIndexOrThrow(IntentKeys.IMAGE_BUFFER));
+                                byte[] bufferData = imageDataCursor.getBlob(imageDataCursor.getColumnIndexOrThrow(IntentKeys.IMAGE_DATA));
                                 baos.write(bufferData);
-                                nextURI = imageDataCursor.getString(imageDataCursor.getColumnIndex(IntentKeys.IMAGE_NEXT_URI));
+                                nextURI = imageDataCursor.getString(imageDataCursor.getColumnIndexOrThrow(IntentKeys.IMAGE_NEXT_URI));
                             }
                             assert imageDataCursor != null;
                             imageDataCursor.close();
