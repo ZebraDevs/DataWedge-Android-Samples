@@ -1,21 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    namespace 'com.zebra.datacapture1'
+    compileSdk = 34
+
     defaultConfig {
         applicationId "com.zebra.datacapture1"
-        minSdkVersion 23
-        targetSdkVersion 25
+        minSdk = 23
+        targetSdk = 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 

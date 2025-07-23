@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Create profile from UI onClick() event
-    public void CreateProfile (View view){
+    public void CreateProfile(View view) {
         String profileName = EXTRA_PROFILENAME;
 
         // Send DataWedge intent with extra to create profile
@@ -191,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Toggle soft scan trigger from UI onClick() event
     // Use SOFT_SCAN_TRIGGER: http://techdocs.zebra.com/datawedge/latest/guide/api/softscantrigger/
-    public void ToggleSoftScanTrigger (View view){
+    public void ToggleSoftScanTrigger(View view) {
         sendDataWedgeIntentWithExtra(ACTION_DATAWEDGE, EXTRA_SOFT_SCAN_TRIGGER, "TOGGLE_SCANNING");
     }
 
@@ -208,7 +209,12 @@ public class MainActivity extends AppCompatActivity {
         // register to received broadcasts via DataWedge scanning
         filter.addAction(getResources().getString(R.string.activity_intent_filter_action));
         filter.addAction(getResources().getString(R.string.activity_action_from_service));
-        registerReceiver(myBroadcastReceiver, filter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(myBroadcastReceiver, filter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(myBroadcastReceiver, filter);
+        }
     }
 
     // Unregister scanner status notification
@@ -223,16 +229,13 @@ public class MainActivity extends AppCompatActivity {
         this.sendBroadcast(i);
     }
 
-    public String setDecoder (CheckBox decoder)
-    {
+    public String setDecoder(CheckBox decoder) {
         boolean checkValue = decoder.isChecked();
         String value = "false";
-        if (checkValue)
-        {
+        if (checkValue) {
             value = "true";
             return value;
-        }
-        else
+        } else
             return value;
     }
 
@@ -245,8 +248,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "DataWedge Action:" + action);
 
             // Get DataWedge version info
-            if (intent.hasExtra(EXTRA_RESULT_GET_VERSION_INFO))
-            {
+            if (intent.hasExtra(EXTRA_RESULT_GET_VERSION_INFO)) {
                 Bundle versionInfo = intent.getBundleExtra(EXTRA_RESULT_GET_VERSION_INFO);
                 String DWVersion = versionInfo.getString("DATAWEDGE");
 
@@ -255,30 +257,21 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(LOG_TAG, "DataWedge Version: " + DWVersion);
             }
 
-            if (action.equals(getResources().getString(R.string.activity_intent_filter_action)))
-            {
+            if (action.equals(getResources().getString(R.string.activity_intent_filter_action))) {
                 //  Received a barcode scan
-                try
-                {
+                try {
                     displayScanResult(intent, "via Broadcast");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //  Catch error if the UI does not exist when we receive the broadcast...
                 }
-            }
-
-            else if (action.equals(ACTION_RESULT))
-            {
+            } else if (action.equals(ACTION_RESULT)) {
                 // Register to receive the result code
-                if ((intent.hasExtra(EXTRA_RESULT)) && (intent.hasExtra(EXTRA_COMMAND)))
-                {
+                if ((intent.hasExtra(EXTRA_RESULT)) && (intent.hasExtra(EXTRA_COMMAND))) {
                     String command = intent.getStringExtra(EXTRA_COMMAND);
                     String result = intent.getStringExtra(EXTRA_RESULT);
                     String info = "";
 
-                    if (intent.hasExtra(EXTRA_RESULT_INFO))
-                    {
+                    if (intent.hasExtra(EXTRA_RESULT_INFO)) {
                         Bundle result_info = intent.getBundleExtra(EXTRA_RESULT_INFO);
                         Set<String> keys = result_info.keySet();
                         for (String key : keys) {
@@ -292,24 +285,21 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         }
-                        Log.d(LOG_TAG, "Command: "+command+"\n" +
-                                "Result: " +result+"\n" +
+                        Log.d(LOG_TAG, "Command: " + command + "\n" +
+                                "Result: " + result + "\n" +
                                 "Result Info: " + info + "\n");
-                        Toast.makeText(getApplicationContext(), "Error Resulted. Command:" + command + "\nResult: " + result + "\nResult Info: " +info, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Error Resulted. Command:" + command + "\nResult: " + result + "\nResult Info: " + info, Toast.LENGTH_LONG).show();
                     }
                 }
 
             }
 
             // Register for scanner change notification
-            else if (action.equals(ACTION_RESULT_NOTIFICATION))
-            {
-                if (intent.hasExtra(EXTRA_RESULT_NOTIFICATION))
-                {
+            else if (action.equals(ACTION_RESULT_NOTIFICATION)) {
+                if (intent.hasExtra(EXTRA_RESULT_NOTIFICATION)) {
                     Bundle extras = intent.getBundleExtra(EXTRA_RESULT_NOTIFICATION);
                     String notificationType = extras.getString(EXTRA_RESULT_NOTIFICATION_TYPE);
-                    if (notificationType != null)
-                    {
+                    if (notificationType != null) {
                         switch (notificationType) {
                             case EXTRA_KEY_VALUE_SCANNER_STATUS:
                                 // Change in scanner status occurred
@@ -326,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
                                 // For future enhancement
                                 break;
 
-                            case  EXTRA_KEY_VALUE_CONFIGURATION_UPDATE:
+                            case EXTRA_KEY_VALUE_CONFIGURATION_UPDATE:
                                 // Configuration change occurred
                                 // For future enhancement
                                 break;
@@ -337,8 +327,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void displayScanResult(Intent initiatingIntent, String howDataReceived)
-    {
+    private void displayScanResult(Intent initiatingIntent, String howDataReceived) {
         // store decoded data
         String decodedData = initiatingIntent.getStringExtra(getResources().getString(R.string.datawedge_intent_key_data));
         // store decoder type
@@ -351,8 +340,7 @@ public class MainActivity extends AppCompatActivity {
         lblScanLabelType.setText(decodedLabelType);
     }
 
-    private void sendDataWedgeIntentWithExtra(String action, String extraKey, Bundle extras)
-    {
+    private void sendDataWedgeIntentWithExtra(String action, String extraKey, Bundle extras) {
         Intent dwIntent = new Intent();
         dwIntent.setAction(action);
         dwIntent.putExtra(extraKey, extras);
@@ -361,8 +349,7 @@ public class MainActivity extends AppCompatActivity {
         this.sendBroadcast(dwIntent);
     }
 
-    private void sendDataWedgeIntentWithExtra(String action, String extraKey, String extraValue)
-    {
+    private void sendDataWedgeIntentWithExtra(String action, String extraKey, String extraValue) {
         Intent dwIntent = new Intent();
         dwIntent.setAction(action);
         dwIntent.putExtra(extraKey, extraValue);
@@ -372,35 +359,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         registerReceivers();
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         unregisterReceiver(myBroadcastReceiver);
         unRegisterScannerStatus();
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
     }
 
     @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         super.onStart();
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         super.onStop();
     }
 }
