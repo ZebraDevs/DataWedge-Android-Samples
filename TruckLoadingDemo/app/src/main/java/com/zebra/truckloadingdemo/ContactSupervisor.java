@@ -58,13 +58,7 @@ public class ContactSupervisor extends AppCompatActivity {
         setContentView(R.layout.confirm_message_sent);
         mBeepController.beep(true);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
-            @Override
-            public void run(){
-                returnToCaller();
-            }
-        }, 1500);
+        new Handler().postDelayed(() -> returnToCaller(), 1500);
     }
 
     /**
