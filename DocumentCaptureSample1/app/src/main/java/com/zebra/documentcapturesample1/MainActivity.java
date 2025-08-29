@@ -13,6 +13,7 @@ import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,19 +28,17 @@ import java.util.List;
 
 
 /**
- *
  * Template "SignatureAndAddressSeparately" must be present in device prior to running this sample.
  * Flow of the sample:
  * 1. Register broadcast receiver.
  * 2. Query if DocumentCaptureProfile profile exists (result will be received in the broadcast receiver).
  * 3. If profile does not exist, create the profile with NextGen SimulScan configurations.
- *      3.1. Set scanning mode as "Document Capture".
- *      3.2. Configure Intent Output action, category and delivery mechanism. Enable content provider.
- *      3.3. Associate this application to the profile.
+ * 3.1. Set scanning mode as "Document Capture".
+ * 3.2. Configure Intent Output action, category and delivery mechanism. Enable content provider.
+ * 3.3. Associate this application to the profile.
  * 4. If profile creation failed for one or more plugins, delete the profile.
  * 5. Clicking on "Toggle Scanning" button will start/stop scanning.
  * 6. On a successful decode, decoded data will be received by to the broadcast receiver with the action given in the Intent Output.
- *
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtStatus = findViewById(R.id.txtStatus);
-        txtTemplate  = findViewById(R.id.txtTemplate);
+        txtTemplate = findViewById(R.id.txtTemplate);
         txtTemplate.setText("Template \"" + TEMPLATE_NAME + "\", must be available in the device to run this application. Please use DataWedgeMGR via StageNow to push the templates to device");
         layoutRegeions = findViewById(R.id.layoutRegeions);
         registerReceivers();
@@ -79,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
         unRegisterReceivers();
     }
 
-    private void queryProfileList()
-    {
+    private void queryProfileList() {
         Intent i = new Intent();
         i.setAction(IntentKeys.DATAWEDGE_API_ACTION);
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
@@ -88,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(i);
     }
 
-    private void deleteProfile()
-    {
+    private void deleteProfile() {
         Intent i = new Intent();
         i.setAction(IntentKeys.DATAWEDGE_API_ACTION);
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
@@ -136,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*###### Associate this application to the profile [Start] ######*/
         Bundle configApplicationList = new Bundle();
-        configApplicationList.putString("PACKAGE_NAME",getPackageName());
+        configApplicationList.putString("PACKAGE_NAME", getPackageName());
         configApplicationList.putStringArray("ACTIVITY_LIST", new String[]{"*"});
         bMain.putParcelableArray("APP_LIST", new Bundle[]{
                 configApplicationList
@@ -167,25 +164,27 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(IntentKeys.NOTIFICATION_ACTION);
         filter.addAction(IntentKeys.INTENT_OUTPUT_ACTION);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(myBroadcastReceiver, filter);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(myBroadcastReceiver, filter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(myBroadcastReceiver, filter);
+        }
     }
 
     void unRegisterReceivers() {
         unregisterReceiver(myBroadcastReceiver);
     }
 
-    public void btnOnClickCreateProfile(View view)
-    {
+    public void btnOnClickCreateProfile(View view) {
         createProfile();
     }
 
-    public void btnOnClickClearScannedData(View view)
-    {
+    public void btnOnClickClearScannedData(View view) {
         layoutRegeions.removeAllViews();
     }
 
-    public void btnOnClickScan(View view)
-    {
+    public void btnOnClickScan(View view) {
         Intent i = new Intent();
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
         i.setAction(IntentKeys.DATAWEDGE_API_ACTION);
@@ -193,8 +192,7 @@ public class MainActivity extends AppCompatActivity {
         this.sendBroadcast(i);
     }
 
-    void updateStatus(final String status)
-    {
+    void updateStatus(final String status) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -315,29 +313,26 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void processSingleDecode(Bundle data)
-    {
+    private void processSingleDecode(Bundle data) {
         String decodeDataUri = data.getString(IntentKeys.DECODE_DATA_EXTRA);
         String barcodeData = "";
+
         // Check if the data is coming through the content provider.
-        if(decodeDataUri != null) {
+        if (decodeDataUri != null) {
             // Data is coming through the content provider, using a Cursor object to extract data
-            Cursor cursor = getContentResolver()
-                    .query(Uri.parse(decodeDataUri), null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
+            try (Cursor cursor = getContentResolver()
+                    .query(Uri.parse(decodeDataUri), null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    String labelType = cursor
+                            .getString(cursor.getColumnIndexOrThrow(IntentKeys.LABEL_TYPE));
+                    String dataString = cursor
+                            .getString(cursor.getColumnIndexOrThrow(IntentKeys.STRING_DATA_KEY_SINGLE_BARCODE));
 
-                String labelType = cursor
-                        .getString(cursor.getColumnIndex(IntentKeys.LABEL_TYPE));
-                String dataString = cursor
-                        .getString(cursor.getColumnIndex(IntentKeys.STRING_DATA_KEY_SINGLE_BARCODE));
-
-                barcodeData += "\nLabel type: " + labelType;
-                barcodeData += "\nString data: " + dataString;
+                    barcodeData += "\nLabel type: " + labelType;
+                    barcodeData += "\nString data: " + dataString;
+                }
             }
-        }
-        else
-        {
+        } else {
             // Data is coming through the Intent bundle itself
             String labelType = data.getString(IntentKeys.LABEL_TYPE_TAG);
             String dataString = data.getString(IntentKeys.STRING_DATA_KEY);
@@ -353,10 +348,9 @@ public class MainActivity extends AppCompatActivity {
         updateStatus("Data processing successful");
     }
 
-    private synchronized void processMultipleDecode(Bundle data)
-    {
+    private synchronized void processMultipleDecode(Bundle data) {
         ArrayList<Bundle> fields = data.getParcelableArrayList(IntentKeys.DATA_TAG);
-        if(fields == null) // Content provider is not enabled in Intent Output plugin or Scanning mode is not selected as "SimulScan"
+        if (fields == null) // Content provider is not enabled in Intent Output plugin or Scanning mode is not selected as "SimulScan"
         {
             updateStatus("Content provider is not enabled in Intent Output plugin " +
                     "or Scanning mode is not selected as \"SimulScan\".\nPlease check and try again");
@@ -366,164 +360,150 @@ public class MainActivity extends AppCompatActivity {
         try {
             // Iterate through each field
             for (Bundle field : fields) {
-
                 String decodeDataUri = field.getString(IntentKeys.FIELD_DATA_URI);
-                Cursor cursor = null;
-                if (decodeDataUri != null)
-                    cursor = getContentResolver().query(Uri.parse(decodeDataUri),
-                            null, null, null);
-                if (cursor != null) {
-                    int imgWidth = 0;
-                    int imgHeight = 0;
-                    cursor.moveToFirst();
 
-                    String strResultStatusData = "";
-                    String labelType = "";
+                if (decodeDataUri == null) {
+                    return;
+                }
 
-                    try {
-                        labelType = cursor.getString(cursor.getColumnIndex(IntentKeys.FIELD_LABEL_TYPE));
-                    } catch (Exception ex) {
-                    }
+                try (Cursor cursor = getContentResolver().query(Uri.parse(decodeDataUri),
+                        null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        int imgWidth = 0;
+                        int imgHeight = 0;
 
-                    strResultStatusData += "\nLabel type: " + labelType;
-                    if (labelType.equals(IntentKeys.LABEL_TYPE_SIGNATURE)) {
-                        imgWidth = cursor.getInt(cursor.getColumnIndex(IntentKeys.IMAGE_WIDTH_TAG));
-                        imgHeight = cursor.getInt(cursor.getColumnIndex(IntentKeys.IMAGE_HEIGHT_TAG));
-                        // Checking if signature is present in the field [Start]
-                        try {
-                            int signature_status = -2;
-                            signature_status = cursor.getInt(cursor.getColumnIndex(IntentKeys.COLUMN_SIGNATURE_STATUS));
-                            if (signature_status == 1) {
-                                //Signature present
-                                strResultStatusData += "\nSignature status: Signature is present";
-                            } else if (signature_status == 0) {
-                                //Signature not present
-                                strResultStatusData += "\nSignature status: Signature is not present";
-                            } else if (signature_status == -1) {
-                                //Signature not requested
-                                strResultStatusData += "\nSignature status: Signature check is not requested";
-                            } else if (signature_status == -2) {
-                                //Signature not requested
+                        String strResultStatusData = "";
+                        String labelType = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.FIELD_LABEL_TYPE));
+
+                        strResultStatusData += "\nLabel type: " + labelType;
+                        if (labelType.equals(IntentKeys.LABEL_TYPE_SIGNATURE)) {
+                            imgWidth = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_WIDTH_TAG));
+                            imgHeight = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.IMAGE_HEIGHT_TAG));
+
+                            // Checking if signature is present in the field [Start]
+                            try {
+                                int signature_status = -2;
+                                signature_status = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.COLUMN_SIGNATURE_STATUS));
+                                if (signature_status == 1) {
+                                    //Signature present
+                                    strResultStatusData += "\nSignature status: Signature is present";
+                                } else if (signature_status == 0) {
+                                    //Signature not present
+                                    strResultStatusData += "\nSignature status: Signature is not present";
+                                } else if (signature_status == -1) {
+                                    //Signature not requested
+                                    strResultStatusData += "\nSignature status: Signature check is not requested";
+                                } else if (signature_status == -2) {
+                                    //Signature not requested
+                                    strResultStatusData += "\nSignature status: Signature check is not supported";
+                                }
+                            } catch (Exception ex) {
                                 strResultStatusData += "\nSignature status: Signature check is not supported";
                             }
-                        } catch (Exception ex) {
-                            strResultStatusData += "\nSignature status: Signature check is not supported";
+                            //Checking if signature is present in the field [Finish]
+                            strResultStatusData += "\nImage data: ";
+                        } else {
+                            String dataString = cursor
+                                    .getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_STRING));
+                            strResultStatusData += "\nString data: " + dataString;
                         }
-                        //Checking if signature is present in the field [Finish]
-                        strResultStatusData += "\nImage data: ";
-                    } else {
-                        String dataString = cursor
-                                .getString(cursor.getColumnIndex(IntentKeys.DATA_STRING));
-                        strResultStatusData += "\nString data: " + dataString;
-                    }
 
-                    String nextURI = cursor.getString(cursor.getColumnIndex(IntentKeys.DATA_NEXT_URI));
-                    byte[] binaryData = null;
-                    if (nextURI.isEmpty()) { // No data chunks. All data are available in one chunk
-                        binaryData = cursor.getBlob(cursor.getColumnIndex(IntentKeys.DECODE_DATA));
-                    } else {
-                        try {
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                            final String fullDataSize = cursor
-                                    .getString(cursor.getColumnIndex(IntentKeys.FULL_DATA_SIZE));
-                            int bufferSize = cursor.getInt(cursor
-                                    .getColumnIndex(IntentKeys.RAW_DATA_SIZE));
-                            baos.write(cursor.getBlob(cursor
-                                    .getColumnIndex(IntentKeys.DECODE_DATA))); // Read the first chunk from initial set
-                            while (!nextURI.isEmpty()) {
-                                Cursor imageDataCursor = getContentResolver()
-                                        .query(Uri.parse(nextURI), null,
-                                                null, null);
-                                if (imageDataCursor != null) {
-                                    imageDataCursor.moveToFirst();
-                                    bufferSize += imageDataCursor
-                                            .getInt(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.RAW_DATA_SIZE));
-                                    byte[] bufferData = imageDataCursor
-                                            .getBlob(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.DECODE_DATA));
-                                    baos.write(bufferData);
-                                    nextURI = imageDataCursor
-                                            .getString(imageDataCursor
-                                                    .getColumnIndex(IntentKeys.DATA_NEXT_URI));
+                        String nextURI = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
+                        byte[] binaryData = null;
+
+                        if (nextURI.isEmpty()) {
+                            // No data chunks. All data are available in one chunk
+                            binaryData = cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.DECODE_DATA));
+                        } else {
+                            try {
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                final String fullDataSize = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.FULL_DATA_SIZE));
+                                int bufferSize = cursor.getInt(cursor.getColumnIndexOrThrow(IntentKeys.RAW_DATA_SIZE));
+
+                                // Read the first chunk from initial set
+                                baos.write(cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.DECODE_DATA)));
+
+                                while (!nextURI.isEmpty()) {
+                                    try (Cursor imageDataCursor = getContentResolver()
+                                            .query(Uri.parse(nextURI), null,
+                                                    null, null)) {
+                                        if (imageDataCursor != null && imageDataCursor.moveToFirst()) {
+                                            bufferSize += imageDataCursor.getInt(imageDataCursor.getColumnIndexOrThrow(IntentKeys.RAW_DATA_SIZE));
+                                            byte[] bufferData = imageDataCursor.getBlob(imageDataCursor.getColumnIndexOrThrow(IntentKeys.DECODE_DATA));
+                                            baos.write(bufferData);
+                                            nextURI = imageDataCursor.getString(imageDataCursor.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
+                                        }
+                                    }
+
+                                    updateStatus("Data being processed, please wait..\n" +
+                                            bufferSize + "/" + fullDataSize + " bytes merged");
                                 }
-                                imageDataCursor.close();
-
-                                updateStatus("Data being processed, please wait..\n" +
-                                        bufferSize + "/" + fullDataSize + " bytes merged");
+                                binaryData = baos.toByteArray();
+                                baos.close();
+                            } catch (final Exception ex) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(MainActivity.this, ex.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                             }
-                            binaryData = baos.toByteArray();
-                            baos.close();
-                        } catch (final Exception ex) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(MainActivity.this, ex.getMessage(),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
                         }
-                    }
 
-                    final TextView txtBarcodeData = new TextView(getApplicationContext());
-                    txtBarcodeData.setText(strResultStatusData);
+                        final TextView txtBarcodeData = new TextView(getApplicationContext());
+                        txtBarcodeData.setText(strResultStatusData);
 
-                    showInUI(txtBarcodeData, null);
+                        showInUI(txtBarcodeData, null);
 
-                    if (labelType.equals(IntentKeys.LABEL_TYPE_SIGNATURE)) {
+                        if (labelType.equals(IntentKeys.LABEL_TYPE_SIGNATURE)) {
 
-                        try {
-                            //-- Creating YUV Image and Bitmap Image [Start]
-                            ByteArrayOutputStream out = new ByteArrayOutputStream();
-                            YuvImage yuvImage = new YuvImage(binaryData, ImageFormat.NV21,
-                                    imgWidth, imgHeight, null);
-                            yuvImage.compressToJpeg(new Rect(0, 0, imgWidth, imgHeight),
-                                    50, out);
-                            byte[] imageBytes = out.toByteArray();
+                            try {
+                                //-- Creating YUV Image and Bitmap Image [Start]
+                                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                YuvImage yuvImage = new YuvImage(binaryData, ImageFormat.NV21,
+                                        imgWidth, imgHeight, null);
+                                yuvImage.compressToJpeg(new Rect(0, 0, imgWidth, imgHeight),
+                                        50, out);
+                                byte[] imageBytes = out.toByteArray();
 
 
-                            Bitmap bmp = null;
-                            if (binaryData != null) {
-                                bmp = BitmapFactory.decodeByteArray(imageBytes, 0,
-                                        imageBytes.length);
-                            }
-                            final ImageView img = new ImageView(getApplicationContext());
-                            img.setImageBitmap(bmp);
-                            showInUI(null, img);
-                            //-- Creating YUV Image and Bitmap Image [Finish]
-                        } catch (final Exception ex) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(MainActivity.this,
-                                            "Error: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
+                                Bitmap bmp = null;
+                                if (binaryData != null) {
+                                    bmp = BitmapFactory.decodeByteArray(imageBytes, 0,
+                                            imageBytes.length);
                                 }
-                            });
+                                final ImageView img = new ImageView(getApplicationContext());
+                                img.setImageBitmap(bmp);
+                                showInUI(null, img);
+                                //-- Creating YUV Image and Bitmap Image [Finish]
+                            } catch (final Exception ex) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(MainActivity.this,
+                                                "Error: " + ex.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
+                            }
                         }
                     }
                 }
             }
             updateStatus("Data processing successful");
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             //Log any errors
         }
     }
 
-    private void showInUI(final TextView textView, final ImageView imageView)
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+    private void showInUI(final TextView textView, final ImageView imageView) {
+        runOnUiThread(() -> {
+            if (textView != null)
+                layoutRegeions.addView(textView);
 
-                if(textView != null)
-                    layoutRegeions.addView(textView);
-
-                if(imageView != null)
-                    layoutRegeions.addView(imageView);
-            }
+            if (imageView != null)
+                layoutRegeions.addView(imageView);
         });
     }
 }

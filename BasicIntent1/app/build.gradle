@@ -1,20 +1,29 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    namespace 'com.zebra.basicintent1'
+    compileSdk = 34
+
     defaultConfig {
         applicationId "com.zebra.basicintent1"
-        minSdkVersion 16
-        targetSdkVersion 28
+        minSdk = 24
+        targetSdk = 34
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 

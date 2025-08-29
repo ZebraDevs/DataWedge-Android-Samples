@@ -71,43 +71,23 @@ public class LoginResponse extends AppCompatActivity implements ScanReceiver.OnS
 
             mBeepController.beep(true);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable(){
-                @Override
-                public void run(){
-                    mLedController.sendAndClearLED(true);
-                }
-            }, 30);
+            new Handler().postDelayed(() -> mLedController.sendAndClearLED(true), 30);
 
             final Intent startScanning;
             startScanning = new Intent(LoginResponse.this, AreaDisplay.class);
 
-            Handler handler2 = new Handler();
-            handler2.postDelayed(new Runnable(){
-                @Override
-                public void run(){
-                    startActivity(startScanning);
-                    finish();
-                }
+            new Handler().postDelayed(() -> {
+                startActivity(startScanning);
+                finish();
             }, 1000);
         }
         else {
             setContentView(R.layout.login_denied);
             mView = findViewById(R.id.login_denied);
-            mView.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View v, MotionEvent event) {
-                    return mGestureDetector.onTouchEvent(event);
-                }
-            });
+            mView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
             mBeepController.beep(false);
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable(){
-                @Override
-                public void run(){
-                    mLedController.sendAndClearLED(false);
-                }
-            }, 30);
+            new Handler().postDelayed(() -> mLedController.sendAndClearLED(false), 30);
         }
     }
 

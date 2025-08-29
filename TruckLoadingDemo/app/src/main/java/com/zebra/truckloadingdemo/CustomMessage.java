@@ -31,23 +31,16 @@ public class CustomMessage extends AppCompatActivity {
 
         //When in custom message view, will send message on IME done event
         EditText textInput = findViewById(R.id.textInput);
-        textInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    messageSent();
-                    return true;
-                }
-                return false;
+        textInput.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                messageSent();
+                return true;
             }
+            return false;
         });
 
         mView = findViewById(R.id.custom_message);
-        mView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
-            }
-        });
+        mView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
 
         mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             //Gesture detector picks up onDown(press) and OnSingleTapUp(release) before onFling(swipe)
@@ -71,7 +64,6 @@ public class CustomMessage extends AppCompatActivity {
                 }
                 return true;
             }
-
         });
     }
 
@@ -82,13 +74,7 @@ public class CustomMessage extends AppCompatActivity {
         setContentView(R.layout.confirm_message_sent);
         mBeepController.beep(true);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable(){
-            @Override
-            public void run(){
-                returnToCaller();
-            }
-        }, 1500);
+        new Handler().postDelayed(() -> returnToCaller(), 1500);
     }
 
     /**
@@ -113,6 +99,7 @@ public class CustomMessage extends AppCompatActivity {
             messageSent();
             return true;
         }
+
         //Goes back to ContactSupervisor
         else if (keyCode == KeyEvent.KEYCODE_BACK){
             Intent custom = new Intent(CustomMessage.this, ContactSupervisor.class);

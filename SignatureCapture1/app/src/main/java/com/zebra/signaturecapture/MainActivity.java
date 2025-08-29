@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -65,15 +66,19 @@ public class MainActivity extends AppCompatActivity {
 
         requestPermissionStorage();
         Intent i = getIntent();
-        if(i!=null)
+        if (i != null)
             handleIntent(i);
     }
 
     final int REQUEST_READ_STORAGE = 12345;
 
-    void requestPermissionStorage(){
+    private void requestPermissionStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
+
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE ) != PackageManager.PERMISSION_GRANTED ) {
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             // Request the permission
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -81,13 +86,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    File getImagesSaveDirectory(){
-        File file = new File(this.getExternalMediaDirs()[0]+"/SigCap/");
-        if(!file.exists()&& file.mkdir()){
-            Log.d(TAG,"Directory successfully created");
-        }
-
-        else{
+    File getImagesSaveDirectory() {
+        File file = new File(this.getExternalMediaDirs()[0] + "/SigCap/");
+        if (!file.exists() && file.mkdir()) {
+            Log.d(TAG, "Directory successfully created");
+        } else {
             Log.i(TAG, "Directory exists");
         }
         return file;
@@ -108,7 +111,11 @@ public class MainActivity extends AppCompatActivity {
         myBroadcastReceiver = new MyBroadcastReceiver();
         myBroadcastReceiver.handler = new Handler();
         myBroadcastReceiver.setActivity(this);
-        registerReceiver(myBroadcastReceiver, filter1);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(myBroadcastReceiver, filter1, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(myBroadcastReceiver, filter1);
+        }
 
         Window w = this.getWindow();
         WindowManager.LayoutParams lp = w.getAttributes();
@@ -133,14 +140,15 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Display the image in the UI and save it in the app's media imagesDirectory
+     *
      * @param imageUriArray - Uri list returned from DataWedge
-     * @param ext - image format/extension e.g: jpg
+     * @param ext           - image format/extension e.g: jpg
      */
     public void showImage(ArrayList<Uri> imageUriArray, String ext) {
         Log.d(TAG, "showImage(..)");
         try {
             if (imageUriArray != null) {
-                if(imagesDirectory==null) {
+                if (imagesDirectory == null) {
                     imagesDirectory = getImagesSaveDirectory();
                 }
                 int i = 0;
@@ -209,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             // Handle tiff image - NOT SUPPORTED IN THIS SAMPLE
-                            if(ext !=null && ext.equalsIgnoreCase("tiff")){
+                            if (ext != null && ext.equalsIgnoreCase("tiff")) {
 
                                 // Add your code here to support .tiff images
                             }
@@ -224,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    File writeJpegToFile(File directory,int id, String extension, Bitmap bitmap) {
+    File writeJpegToFile(File directory, int id, String extension, Bitmap bitmap) {
         File file = null;
 
         if (bitmap != null) {
@@ -232,9 +240,9 @@ public class MainActivity extends AppCompatActivity {
             int height = bitmap.getHeight();
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String fileStorePath = directory.getAbsolutePath() + "/SigCap" + "_" +width+"X" +height+"_" + timeStamp + "_" + id + "." + extension;
+            String fileStorePath = directory.getAbsolutePath() + "/SigCap" + "_" + width + "X" + height + "_" + timeStamp + "_" + id + "." + extension;
             file = new File(fileStorePath);
-            if (file.exists()){
+            if (file.exists()) {
                 file.delete();
             }
 
@@ -246,20 +254,20 @@ public class MainActivity extends AppCompatActivity {
                 fileOutputStream.flush();
                 fileOutputStream.close();
             } catch (Exception e) {
-                   Log.e(TAG, "writeJpegToFile()" + e.getMessage());
+                Log.e(TAG, "writeJpegToFile()" + e.getMessage());
             }
         }
         return file;
     }
 
     // Use DataWedge API SetConfig : http://techdocs.zebra.com/datawedge/latest/guide/api/setconfig/
-    public void setConfiguration(View view){
+    public void setConfiguration(View view) {
 
         // Main bundle properties
         Bundle bundleMain = new Bundle();
         // profile name and state
         bundleMain.putString("PROFILE_NAME", PROFILE_NAME_SIG_CAP);
-        bundleMain.putString("PROFILE_ENABLED","true");
+        bundleMain.putString("PROFILE_ENABLED", "true");
         // Create DataWedge profile if it does not exist
         bundleMain.putString("CONFIG_MODE", "CREATE_IF_NOT_EXIST");
 
@@ -278,8 +286,8 @@ public class MainActivity extends AppCompatActivity {
         bundleBarcodeParams.putString("decoder_signature", "true");
         EditText w = findViewById(R.id.width);
         EditText h = findViewById(R.id.height);
-        bundleBarcodeParams.putString("decoder_signature_height", h!=null?h.getText().toString():"100");
-        bundleBarcodeParams.putString("decoder_signature_width", w!=null?w.getText().toString():"400");
+        bundleBarcodeParams.putString("decoder_signature_height", h != null ? h.getText().toString() : "100");
+        bundleBarcodeParams.putString("decoder_signature_width", w != null ? w.getText().toString() : "400");
         bundleBarcodeParams.putString("decoder_signature_bpp", "2");    //(0 - 1BPP, 1 - 4BPP, 2- 8BPP)
         bundleBarcodeParams.putString("decoder_signature_format", "1"); //(1 – JPEG, 3 – BMP,  4 – TIFF )
         bundleBarcodeParams.putString("decoder_signature_jpegquality", "95");   //(5 – 100, multiples of 5)
@@ -328,9 +336,9 @@ public class MainActivity extends AppCompatActivity {
         bundleSetConfig.putExtra("SEND_RESULT", "COMPLETE_RESULT"); //Supported values: NONE, LAST_RESULT, COMPLETE_RESULT
         bundleSetConfig.putExtra("COMMAND_IDENTIFIER", "INTENT_API");
 
-        Log.d(TAG,"Calling Set_Config API");
+        Log.d(TAG, "Calling Set_Config API");
         this.sendBroadcast(bundleSetConfig);
-        Toast.makeText(this,PROFILE_NAME_SIG_CAP+" Profile and Parameters updated",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, PROFILE_NAME_SIG_CAP + " Profile and Parameters updated", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -339,14 +347,14 @@ public class MainActivity extends AppCompatActivity {
         handleIntent(intent);
     }
 
-    public void putInformationalMessage(String message){
-        if(informationBox!=null){
+    public void putInformationalMessage(String message) {
+        if (informationBox != null) {
             informationBox.setText(message);
         }
     }
 
-    void handleIntent(Intent i){
-        if(i==null)
+    void handleIntent(Intent i) {
+        if (i == null)
             return;
         myBroadcastReceiver.handleIncomingImageUri(i);
     }

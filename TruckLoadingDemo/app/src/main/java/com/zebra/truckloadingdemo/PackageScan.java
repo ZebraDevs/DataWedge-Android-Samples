@@ -12,8 +12,7 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class PackageScan extends AppCompatActivity implements ScanReceiver.OnScanListener
-{
+public class PackageScan extends AppCompatActivity implements ScanReceiver.OnScanListener {
     private View mView;
     private GestureDetector mGestureDetector;
     private BeepController mBeepController;
@@ -38,41 +37,38 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
 
         //This gesture detector simply implements 1 tap -> good scan,  2 taps -> bad scan
         //for temporary testing convenience
-        mGestureDetector = new GestureDetector(PackageScan.this ,new GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = new GestureDetector(PackageScan.this, new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onDown(MotionEvent event) {return true;}
+            public boolean onDown(MotionEvent event) {
+                return true;
+            }
 
             @Override
-            public boolean onSingleTapUp(MotionEvent event) { return true; }
+            public boolean onSingleTapUp(MotionEvent event) {
+                return true;
+            }
 
             @Override
-            public boolean onSingleTapConfirmed(MotionEvent event){
+            public boolean onSingleTapConfirmed(MotionEvent event) {
                 //Tap to go back to scan package screen
-                if(mView == findViewById(R.id.bad_package)){
+                if (mView == findViewById(R.id.bad_package)) {
                     setLayoutPackage();
                 }
                 //Simulates good package scan
-                else{
+                else {
                     setLayoutGreenCheck();
 
                     mBeepController.beep(true);
                     mLedController.sendAndClearLED(true);
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable(){
-                        @Override
-                        public void run(){
-                            setLayoutPackage();
-                        }
-                    }, 1000);
-
+                    new Handler().postDelayed(() -> setLayoutPackage(), 1000);
                 }
                 return false;
             }
 
             @Override
-            public boolean onDoubleTap(MotionEvent event){
-                if(mView == findViewById(R.id.scan_package)){
+            public boolean onDoubleTap(MotionEvent event) {
+                if (mView == findViewById(R.id.scan_package)) {
                     setLayoutError();
 
                     mBeepController.beep(false);
@@ -82,7 +78,7 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
             }
 
             public void onLongPress(MotionEvent e) {
-                if(mView == findViewById(R.id.scan_package)){
+                if (mView == findViewById(R.id.scan_package)) {
                     mBeepController.beep(true);
                     mLedController.sendAndClearLED(true);
 
@@ -105,7 +101,7 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
     @Override
     public void onScan(String scan) {
         //Reject the scan if previous bad scan was not dealt with
-        if(mView == findViewById(R.id.bad_package)){
+        if (mView == findViewById(R.id.bad_package)) {
             mBeepController.beep(false);
             return;
         }
@@ -130,8 +126,7 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
                 logout.putExtra("caller", "package");
                 startActivity(logout);
                 finish();
-            }
-            else {
+            } else {
                 //Scan was successful
                 if (scan.contains("package")) {
                     setLayoutGreenCheck();
@@ -139,16 +134,9 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
                     mBeepController.beep(true);
                     mLedController.sendAndClearLED(true);
 
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setLayoutPackage();
-                        }
-                    }, 1000);
-
-                }//Scan was unsuccessful
-                else {
+                    new Handler().postDelayed(() -> setLayoutPackage(), 1000);
+                } else {
+                    //Scan was unsuccessful
                     setLayoutError();
 
                     mBeepController.beep(false);
@@ -161,7 +149,7 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         //KEYCODE L simulates area scan - go back to AreaDisplay activity
-        if (keyCode == KeyEvent.KEYCODE_L && mView == findViewById(R.id.scan_package)){
+        if (keyCode == KeyEvent.KEYCODE_L && mView == findViewById(R.id.scan_package)) {
             mBeepController.beep(true);
             mLedController.sendAndClearLED(true);
 
@@ -169,40 +157,30 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
             startActivity(newArea);
             finish();
             return true;
-        }
-        else if (keyCode == KeyEvent.KEYCODE_BACK){
+        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
-        }
-        else return super.onKeyUp(keyCode, event);
+        } else return super.onKeyUp(keyCode, event);
     }
 
     /**
      * Sets layout to scan package screen and sets global mIsPackage to true
      */
-    private void setLayoutPackage(){
+    private void setLayoutPackage() {
         setContentView(R.layout.scan_package);
 
         mView = findViewById(R.id.scan_package);
-        mView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
-            }
-        });
+        mView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
         mIsPackage = true;
     }
 
     /**
      * Sets layout to bad package screen and sets global mIsPackage to false
      */
-    private void setLayoutError(){
+    private void setLayoutError() {
         setContentView(R.layout.bad_package);
         mView = findViewById(R.id.bad_package);
 
-        mView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
-            }
-        });
+        mView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
         mIsPackage = false;
     }
 
@@ -210,28 +188,25 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
      * Connects to Done button in bad_package.xml
      * Sets layout to package screens
      */
-    public void doneClicked(View view){
+    public void doneClicked(View view) {
         setLayoutPackage();
     }
 
     /**
      * Sets layout and view to green check
      */
-    private void setLayoutGreenCheck (){
+    private void setLayoutGreenCheck() {
         setContentView(R.layout.green_check);
         mView = findViewById(R.id.green_check);
-        mView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                return mGestureDetector.onTouchEvent(event);
-            }
-        });
+        mView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
     }
 
     /**
      * When the Contact Manager button is clicked, start the Contact Supervisor activity
+     *
      * @param view - Contact Supervisor button in bad_package.xml
      */
-    public void contactSupervisor (View view){
+    public void contactSupervisor(View view) {
         Intent contact = new Intent(PackageScan.this, ContactSupervisor.class);
         contact.putExtra("caller", "package");
         startActivity(contact);
@@ -239,7 +214,7 @@ public class PackageScan extends AppCompatActivity implements ScanReceiver.OnSca
     }
 
     @Override
-    protected void onDestroy () {
+    protected void onDestroy() {
         super.onDestroy();
         mLedController.closeService();
         mLedController = null;

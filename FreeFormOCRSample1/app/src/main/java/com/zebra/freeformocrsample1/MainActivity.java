@@ -19,6 +19,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -59,14 +60,18 @@ public class MainActivity extends AppCompatActivity {
 
         registerReceivers();
     }
-    private void registerReceivers() {
 
+    private void registerReceivers() {
         IntentFilter filter = new IntentFilter();
         filter.addAction(IntentKeys.RESULT_ACTION);
         filter.addAction(IntentKeys.NOTIFICATION_ACTION);
         filter.addAction(IntentKeys.INTENT_OUTPUT_ACTION);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(broadcastReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(broadcastReceiver, filter, RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(broadcastReceiver, filter);
+        }
     }
 
     @Override
@@ -168,8 +173,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void deleteProfile()
-    {
+    private void deleteProfile() {
         Intent i = new Intent();
         i.setAction(IntentKeys.DATAWEDGE_API_ACTION);
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
@@ -177,8 +181,7 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(i);
     }
 
-    private void queryProfileList()
-    {
+    private void queryProfileList() {
         Intent i = new Intent();
         i.setAction(IntentKeys.DATAWEDGE_API_ACTION);
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
@@ -186,18 +189,15 @@ public class MainActivity extends AppCompatActivity {
         sendBroadcast(i);
     }
 
-    public void btnOnClickCreateProfile(View view)
-    {
+    public void btnOnClickCreateProfile(View view) {
         createProfile();
     }
 
-    public void btnOnClickClearScannedData(View view)
-    {
+    public void btnOnClickClearScannedData(View view) {
         layoutRegion.removeAllViews();
     }
 
-    public void btnOnClickScan(View view)
-    {
+    public void btnOnClickScan(View view) {
         Intent i = new Intent();
         i.setPackage(IntentKeys.DATAWEDGE_PACKAGE);
         i.setAction(DATAWEDGE_API_ACTION);
@@ -335,23 +335,22 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         if (jsonObject.has(IntentKeys.STRING_DATA_KEY)) {
                             //String data
-                            outputFreeFormOcrStringData(jsonArray,txtBarcodeData);
-                        } else if(jsonObject.has("uri")){
+                            outputFreeFormOcrStringData(jsonArray, txtBarcodeData);
+                        } else if (jsonObject.has("uri")) {
                             //Image data
                             String uri = jsonObject.getString("uri");
-                            outputFreeFormOCRImageData(uri,jsonObject);
+                            outputFreeFormOCRImageData(uri, jsonObject);
                         }
 
                     }
                 } catch (Exception ex) {
-                    Log.e(TAG, "Error to receive data: "+ex.getMessage() );
+                    Log.e(TAG, "Error to receive data: " + ex.getMessage());
                 }
 
             }
             /* ###### Processing the result of INTENT_OUTPUT [End] ###### */
         }
     };
-
 
 
     private void outputFreeFormOcrStringData(JSONArray array, TextView txtBarcodeData) throws JSONException {
@@ -361,8 +360,7 @@ public class MainActivity extends AppCompatActivity {
         String prevGroup = null;
         for (int i = 0; i < array.length(); i++) {
             try {
-                if(!array.getJSONObject(i).has(IntentKeys.JSON_IMAGE_FORMAT))
-                {
+                if (!array.getJSONObject(i).has(IntentKeys.JSON_IMAGE_FORMAT)) {
                     JSONObject jsonObject = array.getJSONObject(i);
                     String blockLabel = jsonObject.get(IntentKeys.KEY_BLOCK_LABEL).toString();
                     String groupLabel = jsonObject.get(IntentKeys.KEY_GROUP_ID).toString();
@@ -390,26 +388,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private synchronized void outputFreeFormOCRImageData(String uri, JSONObject jsonObject) throws IOException, JSONException {
-        Cursor cursor = getContentResolver().query(Uri.parse(uri), null, null, null);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        if (cursor != null) {
-            cursor.moveToFirst();
-            baos.write(cursor.getBlob(cursor.getColumnIndex(IntentKeys.RAW_DATA)));
-            String nextURI = cursor.getString(cursor.getColumnIndex(IntentKeys.DATA_NEXT_URI));
-            while (nextURI != null && !nextURI.isEmpty()) {
-                Cursor cursorNextData = getContentResolver().query(Uri.parse(nextURI),
-                        null, null, null);
-                if (cursorNextData != null) {
-                    cursorNextData.moveToFirst();
-                    baos.write(cursorNextData.getBlob(cursorNextData.getColumnIndex(IntentKeys.RAW_DATA)));
-                    nextURI = cursorNextData.getString(cursorNextData.getColumnIndex(IntentKeys.DATA_NEXT_URI));
 
+        try (Cursor cursor = getContentResolver().query(Uri.parse(uri), null, null, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                baos.write(cursor.getBlob(cursor.getColumnIndexOrThrow(IntentKeys.RAW_DATA)));
+                String nextURI = cursor.getString(cursor.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
 
-                    cursorNextData.close();
+                while (nextURI != null && !nextURI.isEmpty()) {
+                    try (Cursor cursorNextData = getContentResolver().query(Uri.parse(nextURI), null, null, null)) {
+                        if (cursorNextData != null && cursorNextData.moveToFirst()) {
+                            baos.write(cursorNextData.getBlob(cursorNextData.getColumnIndexOrThrow(IntentKeys.RAW_DATA)));
+                            nextURI = cursorNextData.getString(cursorNextData.getColumnIndexOrThrow(IntentKeys.DATA_NEXT_URI));
+                        }
+                    }
+
                 }
-
             }
-            cursor.close();
         }
 
         int width = 0;
@@ -431,38 +426,21 @@ public class MainActivity extends AppCompatActivity {
         showInUI(null, img);
     }
 
-    private void showInUI(final TextView textView, final ImageView imageView)
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+    private void showInUI(final TextView textView, final ImageView imageView) {
+        runOnUiThread(() -> {
+            if (textView != null)
+                layoutRegion.addView(textView);
 
-                if(textView != null)
-                    layoutRegion.addView(textView);
-
-                if(imageView != null)
-                    layoutRegion.addView(imageView);
-            }
+            if (imageView != null)
+                layoutRegion.addView(imageView);
         });
     }
 
-    void updateWorkflowStatus(final String status)
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtWorkflowStatus.setText("Workflow Status: " + status);
-            }
-        });
+    void updateWorkflowStatus(final String status) {
+        runOnUiThread(() -> txtWorkflowStatus.setText("Workflow Status: " + status));
     }
 
-    void updateProfileStatus(final String status)
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                txtProfileStatus.setText("Profile Status: " + status);
-            }
-        });
+    void updateProfileStatus(final String status) {
+        runOnUiThread(() -> txtProfileStatus.setText("Profile Status: " + status));
     }
 }
